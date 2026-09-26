@@ -52,11 +52,16 @@ class Renderer {
         // TODO: draw at least 2 Bezier curves
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
-        
+        let pt0 = {x: 100, y:65}
+        let pt1 = {x: 150, y: 300}
+        let pt2 = {x: 287, y:300}
+        let pt3 = {x: 350, y:65}
+
+        this.drawBezierCurve(pt0, pt1, pt2, pt3, this.num_curve_sections, [255, 0, 0, 255], framebuffer)
         
         // Following line is example of drawing a single line
         // (this should be removed after you implement the curve)
-        this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 0, 0, 255], framebuffer);
+        this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 255, 0, 255], framebuffer);
     }
 
     // framebuffer:  canvas ctx image data
@@ -100,6 +105,25 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
+        console.log("draw bezier called")
+        let t = 0
+        let dt = 1 / num_edges
+        let current_point = p0
+
+        for(let e=1; e<=num_edges; e++){
+
+            //Calculate next point
+            let next_x = (Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * Math.pow(t,2) * p2.x) + (Math.pow(t,3) * p3.x)
+            let next_y = (Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * Math.pow(t,2) * p2.y) + (Math.pow(t,3) * p3.y)
+            let next_point = {x: next_x, y: next_y}
+
+            //Draw line between points
+            this.drawLine(current_point, next_point, color, framebuffer)
+
+            //Update the current point
+            current_point = next_point
+            t += dt
+        }
         
         
     }
@@ -157,6 +181,7 @@ class Renderer {
     }
 
     drawLine(p0, p1, color, framebuffer) {
+        console.log("draw line called")
         if (Math.abs(p1.y - p0.y) <= Math.abs(p1.x - p0.x)) { // |m| <= 1
             if (p0.x < p1.x) {
                 this.drawLineLow(p0.x, p0.y, p1.x, p1.y, color, framebuffer);
