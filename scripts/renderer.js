@@ -58,10 +58,6 @@ class Renderer {
         let pt3 = {x: 350, y:65}
 
         this.drawBezierCurve(pt0, pt1, pt2, pt3, this.num_curve_sections, [255, 0, 0, 255], framebuffer)
-        
-        // Following line is example of drawing a single line
-        // (this should be removed after you implement the curve)
-        this.drawLine({x: 100, y: 100}, {x: 600, y: 300}, [255, 255, 0, 255], framebuffer);
     }
 
     // framebuffer:  canvas ctx image data
