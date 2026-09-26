@@ -106,8 +106,8 @@ class Renderer {
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
         console.log("draw bezier called")
-        let t = 0
         let dt = 1 / num_edges
+        let t = dt
         let current_point = p0
 
         for(let e=1; e<=num_edges; e++){
