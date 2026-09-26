@@ -52,10 +52,10 @@ class Renderer {
         // TODO: draw at least 2 Bezier curves
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
-        let pt0 = {x: 100, y:65}
-        let pt1 = {x: 150, y: 300}
-        let pt2 = {x: 287, y:300}
-        let pt3 = {x: 350, y:65}
+        let pt0 = {x: 100, y: 100}
+        let pt1 = {x: 200, y: 350}
+        let pt2 = {x: 300, y: 350}
+        let pt3 = {x: 400, y: 100}
 
         this.drawBezierCurve(pt0, pt1, pt2, pt3, this.num_curve_sections, [255, 0, 0, 255], framebuffer)
     }
@@ -102,26 +102,26 @@ class Renderer {
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
         console.log("draw bezier called")
+        let t = 0
         let dt = 1 / num_edges
-        let t = dt
         let current_point = p0
 
-        for(let e=1; e<=num_edges; e++){
+        for(let e=0; e<num_edges; e++){
+            t += dt;
+            console.log(t);
 
             //Calculate next point
-            let next_x = (Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * Math.pow(t,2) * p2.x) + (Math.pow(t,3) * p3.x)
-            let next_y = (Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * Math.pow(t,2) * p2.y) + (Math.pow(t,3) * p3.y)
-            let next_point = {x: next_x, y: next_y}
+            let next_x = Math.round((Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * Math.pow(t,2) * p2.x) + (Math.pow(t,3) * p3.x));
+            let next_y = Math.round((Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * Math.pow(t,2) * p2.y) + (Math.pow(t,3) * p3.y));
+            let next_point = {x: next_x, y: next_y};
+            //this.setFramebufferColor([0, 0, 0, 255], next_x, next_y, framebuffer);
 
             //Draw line between points
-            this.drawLine(current_point, next_point, color, framebuffer)
+            this.drawLine(current_point, next_point, color, framebuffer);
 
             //Update the current point
-            current_point = next_point
-            t += dt
-        }
-        
-        
+            current_point = next_point;
+        }  
     }
 
     // center:       object {x: __, y: __}
