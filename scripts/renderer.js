@@ -77,6 +77,9 @@ class Renderer {
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         let center1 = {x: 300, y: 300}
         this.drawCircle(center1, 100, this.num_curve_sections, [100, 100, 0, 255], framebuffer)
+
+        let center2 = {x:400, y:400}
+        this.drawCircle(center2, 150, this.num_curve_sections, [100, 0, 100, 255], framebuffer)
         
     }
 
@@ -181,7 +184,7 @@ class Renderer {
             let next_y = Math.round((Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * Math.pow(t,2) * p2.y) + (Math.pow(t,3) * p3.y));
             let next_point = {x: next_x, y: next_y};
             if (this.show_points){
-                this.drawVertex(next_point, color, framebuffer)
+                this.drawVertex(current_point, color, framebuffer)
             }
 
             //Draw line between points
@@ -190,6 +193,13 @@ class Renderer {
             //Update the current point
             current_point = next_point;
         }  
+        if(this.show_points){
+            this.drawVertex(current_point, color, framebuffer)
+            this.drawVertex(p0, [0,0,0,255], framebuffer)
+            this.drawVertex(p1, [0,0,0,255], framebuffer)
+            this.drawVertex(p2, [0,0,0,255], framebuffer)
+            this.drawVertex(p3, [0,0,0,255], framebuffer)
+        }
     }
 
     // center:       object {x: __, y: __}
@@ -245,7 +255,7 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawVertex(v, color, framebuffer) {
         // TODO: draw some symbol (e.g. small rectangle, two lines forming an X, ...) centered at position `v`
-        //this.drawCircle(v, 3, 5, color, framebuffer)
+        this.setFramebufferColor(color, v.x, v.y, framebuffer)
         this.setFramebufferColor(color, v.x+1, v.y+1, framebuffer)
         this.setFramebufferColor(color, v.x+2, v.y+2, framebuffer)
         this.setFramebufferColor(color, v.x, v.y+1, framebuffer)
