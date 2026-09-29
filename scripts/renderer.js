@@ -60,6 +60,8 @@ class Renderer {
 
         this.drawBezierCurve(pt0, pt1, pt2, pt3, this.num_curve_sections, [255, 0, 0, 255], framebuffer)
 
+        console.log(this.show_points)
+
         let pt4 = {x: 200, y: 500}
         let pt5 = {x: 350, y: 200}
         let pt6 = {x: 440, y: 300}
@@ -99,6 +101,12 @@ class Renderer {
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
         let c = [100, 100, 0, 255]
+        let v_list = [{x:20, y:350}, {x:20, y:250},{x:20, y:300},{x:75, y:350},{x:75, y:250},{x:100, y:250},{x:155, y:250},{x:180, y:320},{x:180, y:250},{x:295, y:350},{x:370, y:350},{x:332, y:350},{x:332, y:250},{x:400, y:320},{x:400, y:250},{x:435, y:350},{x:435, y:250},{x:500, y:350},{x:500, y:250},{x:525, y:250},{x:562, y:350},{x:600, y:250},{x:544, y:300},{x:581, y:300},{x:544, y:300}]
+        if(this.show_points){
+            for(let i=0;i<v_list.length;i++){
+                this.drawVertex(v_list[i], c, framebuffer)
+            }
+        }
         
         //K
         this.drawLine({x:20, y:350}, {x:20, y:250}, c, framebuffer)
@@ -122,7 +130,6 @@ class Renderer {
         this.drawLine({x:295, y:350}, {x:370, y:350}, c, framebuffer)
         this.drawLine({x:332, y:350}, {x:332, y:250}, c, framebuffer)
 
-
         //I
         this.drawCircle({x:400, y:340}, 10, this.num_curve_sections, c, framebuffer)
         this.drawLine({x:400, y:320}, {x:400, y:250}, c, framebuffer)
@@ -131,7 +138,6 @@ class Renderer {
         this.drawLine({x:435, y:350}, {x:435, y:250}, c, framebuffer)
         this.drawLine({x:435, y:350}, {x:500, y:250}, c, framebuffer)
         this.drawLine({x:500, y:350}, {x:500, y:250}, c, framebuffer)
-
 
         //A
         this.drawLine({x:525, y:250}, {x:562, y:350}, c, framebuffer)
@@ -144,7 +150,6 @@ class Renderer {
 
         let vr_list = [{x:700, y:310}, {x:740, y: 350}, {x:720, y:340}, {x:760, y: 340}, {x:770, y:310}, {x:760, y:290}, {x:700, y:240}]
         this.drawConvexPolygon(vr_list, [255,0,0,255], framebuffer)
-
 
     }
 
@@ -160,7 +165,13 @@ class Renderer {
         let t = 0
         let dt = 1 / num_edges
         let current_point = p0
-        //console.log("flag:", this.show_flag)
+        if(this.show_points){
+            this.drawVertex(p0, color, framebuffer)
+            this.drawVertex(p0, [0,0,0,255], framebuffer)
+            this.drawVertex(p1, [0,0,0,255], framebuffer)
+            this.drawVertex(p2, [0,0,0,255], framebuffer)
+            this.drawVertex(p3, [0,0,0,255], framebuffer)
+        }
 
         for(let e=0; e<num_edges; e++){
             t += dt;
@@ -169,6 +180,9 @@ class Renderer {
             let next_x = Math.round((Math.pow(1-t, 3) * p0.x) + (3 * Math.pow(1-t, 2) * t * p1.x) + (3 * (1-t) * Math.pow(t,2) * p2.x) + (Math.pow(t,3) * p3.x));
             let next_y = Math.round((Math.pow(1-t, 3) * p0.y) + (3 * Math.pow(1-t, 2) * t * p1.y) + (3 * (1-t) * Math.pow(t,2) * p2.y) + (Math.pow(t,3) * p3.y));
             let next_point = {x: next_x, y: next_y};
+            if (this.show_points){
+                this.drawVertex(next_point, color, framebuffer)
+            }
 
             //Draw line between points
             this.drawLine(current_point, next_point, color, framebuffer);
@@ -187,11 +201,17 @@ class Renderer {
         // TODO: draw a sequence of straight lines to approximate a circle
         let dt = (2 * Math.PI) / num_edges
         let current_point =  {x: center.x + radius, y: center.y}
+            if (this.show_points){
+                this.drawVertex(current_point, color, framebuffer)
+            }
 
         for (let rad = dt; rad <= (2 * Math.PI); rad += dt){
             let next_x = Math.round(center.x + (radius * Math.cos(rad)))
             let next_y = Math.round(center.y + (radius * Math.sin(rad)))
             let next_point = {x: next_x, y: next_y}
+            if (this.show_points){
+                this.drawVertex(next_point, color, framebuffer)
+            }
 
             this.drawLine(current_point, next_point, color, framebuffer)
 
@@ -208,6 +228,11 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawConvexPolygon(vertex_list, color, framebuffer) {
         // TODO: draw a sequence of triangles to form a convex polygon
+        if (this.show_points){
+            for(let i=0;i<vertex_list.length;i++){
+                this.drawVertex(vertex_list[i], color, framebuffer)
+            }
+        }
         for (let i=1; i<vertex_list.length-1;i++){
             for (let j=2; j<vertex_list.length;j++){
                 this.drawTriangle(vertex_list[0], vertex_list[i], vertex_list[j], color, framebuffer)
@@ -220,8 +245,19 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawVertex(v, color, framebuffer) {
         // TODO: draw some symbol (e.g. small rectangle, two lines forming an X, ...) centered at position `v`
-        let v_list = [{x: v.x + 2, y: v.y - 3}, {x: v.x + 2, y: v.y - 3}, {x: v.x + 2, y: v.y - 3}, {x: v.x - 2, y: v.y + 3}]
-        this.drawConvexPolygon(v_list, color, framebuffer)
+        //this.drawCircle(v, 3, 5, color, framebuffer)
+        this.setFramebufferColor(color, v.x+1, v.y+1, framebuffer)
+        this.setFramebufferColor(color, v.x+2, v.y+2, framebuffer)
+        this.setFramebufferColor(color, v.x, v.y+1, framebuffer)
+        this.setFramebufferColor(color, v.x, v.y-1, framebuffer)
+        this.setFramebufferColor(color, v.x+1, v.y, framebuffer)
+        this.setFramebufferColor(color, v.x-1, v.y, framebuffer)
+        this.setFramebufferColor(color, v.x-1, v.y+1, framebuffer)
+        this.setFramebufferColor(color, v.x-2, v.y+2, framebuffer)
+        this.setFramebufferColor(color, v.x+1, v.y-1, framebuffer)
+        this.setFramebufferColor(color, v.x+2, v.y-2, framebuffer)
+        this.setFramebufferColor(color, v.x-1, v.y-1, framebuffer)
+        this.setFramebufferColor(color, v.x-2, v.y-2, framebuffer)
     }
     
     /***************************************************************
@@ -248,7 +284,7 @@ class Renderer {
     }
 
     drawLine(p0, p1, color, framebuffer) {
-        console.log("draw line called")
+        
         if (Math.abs(p1.y - p0.y) <= Math.abs(p1.x - p0.x)) { // |m| <= 1
             if (p0.x < p1.x) {
                 this.drawLineLow(p0.x, p0.y, p1.x, p1.y, color, framebuffer);
