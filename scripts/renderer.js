@@ -168,13 +168,6 @@ class Renderer {
         let t = 0
         let dt = 1 / num_edges
         let current_point = p0
-        if(this.show_points){
-            this.drawVertex(p0, color, framebuffer)
-            this.drawVertex(p0, [0,0,0,255], framebuffer)
-            this.drawVertex(p1, [0,0,0,255], framebuffer)
-            this.drawVertex(p2, [0,0,0,255], framebuffer)
-            this.drawVertex(p3, [0,0,0,255], framebuffer)
-        }
 
         for(let e=0; e<num_edges; e++){
             t += dt;
@@ -238,14 +231,14 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawConvexPolygon(vertex_list, color, framebuffer) {
         // TODO: draw a sequence of triangles to form a convex polygon
-        if (this.show_points){
-            for(let i=0;i<vertex_list.length;i++){
-                this.drawVertex(vertex_list[i], color, framebuffer)
-            }
-        }
         for (let i=1; i<vertex_list.length-1;i++){
             for (let j=2; j<vertex_list.length;j++){
                 this.drawTriangle(vertex_list[0], vertex_list[i], vertex_list[j], color, framebuffer)
+            }
+        }
+        if (this.show_points){
+            for(let i=0;i<vertex_list.length;i++){
+                this.drawVertex(vertex_list[i], color, framebuffer)
             }
         }
     }
@@ -258,16 +251,20 @@ class Renderer {
         this.setFramebufferColor(color, v.x, v.y, framebuffer)
         this.setFramebufferColor(color, v.x+1, v.y+1, framebuffer)
         this.setFramebufferColor(color, v.x+2, v.y+2, framebuffer)
+        this.setFramebufferColor(color, v.x+3, v.y+3, framebuffer)
         this.setFramebufferColor(color, v.x, v.y+1, framebuffer)
         this.setFramebufferColor(color, v.x, v.y-1, framebuffer)
         this.setFramebufferColor(color, v.x+1, v.y, framebuffer)
         this.setFramebufferColor(color, v.x-1, v.y, framebuffer)
         this.setFramebufferColor(color, v.x-1, v.y+1, framebuffer)
         this.setFramebufferColor(color, v.x-2, v.y+2, framebuffer)
+        this.setFramebufferColor(color, v.x-3, v.y+3, framebuffer)
         this.setFramebufferColor(color, v.x+1, v.y-1, framebuffer)
         this.setFramebufferColor(color, v.x+2, v.y-2, framebuffer)
+        this.setFramebufferColor(color, v.x+3, v.y-3, framebuffer)
         this.setFramebufferColor(color, v.x-1, v.y-1, framebuffer)
         this.setFramebufferColor(color, v.x-2, v.y-2, framebuffer)
+        this.setFramebufferColor(color, v.x-3, v.y-3, framebuffer)
     }
     
     /***************************************************************
